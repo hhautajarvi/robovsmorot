@@ -247,17 +247,16 @@ class Peli:
             teksti1 = self.fontti.render(f"Onnittelut, sait {self.pisteet} pistettä", True, (0, 0, 0))
         teksti2 = self.fontti.render(f"Esc lopettaa pelin", True, (0, 0, 0))
         teksti3 = self.fontti.render(f"F1 aloittaa uuden pelin", True, (0, 0, 0))
-        self.naytto.blit(teksti1, (350, 300))
-        self.naytto.blit(teksti2, (350, 370))
-        self.naytto.blit(teksti3, (350, 440))
+        self.naytto.blit(teksti1, (530, 300))
+        self.naytto.blit(teksti2, (530, 370))
+        self.naytto.blit(teksti3, (530, 440))
         pygame.display.flip()
         for tapahtuma in pygame.event.get():      
             if tapahtuma.type == pygame.QUIT:
                 exit()
             if tapahtuma.type == pygame.KEYDOWN:            
                 if tapahtuma.key == pygame.K_ESCAPE:
-                    exit()
-            if tapahtuma.type == pygame.KEYDOWN:            
+                    exit()            
                 if tapahtuma.key == pygame.K_F1:
                     self.uusi_peli()                   
 
