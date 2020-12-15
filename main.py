@@ -8,7 +8,7 @@ class Pelaaja(pygame.sprite.Sprite):
         self.surf = pygame.image.load("robo.png").convert()
         self.rect = self.surf.get_rect(center=(20, 480,))
 
-    def liiku(self, painallukset):
+    def liiku(self, painallukset):      #liikutetaan pelaajaa
         if painallukset[pygame.K_UP]:
             self.rect.move_ip(0, -5)
         if painallukset[pygame.K_DOWN]:
@@ -17,7 +17,7 @@ class Pelaaja(pygame.sprite.Sprite):
             self.rect.move_ip(-5, 0)
         if painallukset[pygame.K_RIGHT]:
             self.rect.move_ip(5, 0)
-        if self.rect.left <= 0:
+        if self.rect.left <= 0:     #tarkastetaan että pelaaja pysyy kentällä
             self.rect.left = 0
         if self.rect.right >= 1280:
             self.rect.right = 1280
@@ -32,30 +32,30 @@ class Vihollinen(pygame.sprite.Sprite):
         super(Vihollinen, self).__init__()    
         self.surf = pygame.image.load("hirvio.png").convert_alpha()
         self.rect = self.surf.get_rect(center=(1300, randint(25, 935),))
-        self.suunta = randint(-2, 2)
-        self.nopeus = randint(3, 7)
+        self.suunta = randint(-2, 2)    #yleimmillä tasoilla vihollisten suunta vaihtelee
+        self.nopeus = randint(3, 7)     #vihollisten nopeus vaihtelee
 
     def liiku(self):
         self.rect.move_ip(-self.nopeus, 0)
-        if self.rect.right < 0:
+        if self.rect.right < 0:     #poistetaan kentän ulkopuolelle menneet viholliset
             self.kill()
-            return -1
+            return -1       #ja annetaan näistä pelaajille miinuspiste
         return 0
     
     def liiku2(self):
-        self.rect.move_ip(-(self.nopeus + 2), self.suunta)
+        self.rect.move_ip(-(self.nopeus + 2), self.suunta) #vihollinen liikkuu kakkostasolla eri suuntiin sekä nopeammin
         if self.rect.right < 0:
             self.kill()
             return -1
-        if self.rect.top <= 0:
+        if self.rect.top <= 0: #vihollinen myös kimpoaa seinistä
             self.suunta = -self.suunta
         if self.rect.bottom >= 960:
             self.suunta = -self.suunta
         return 0
     
     def liiku3(self):
-        suuntalista = [-1, 0, 0, 0, 1]
-        self.suunta += choice(suuntalista)
+        suuntalista = [-1, 0, 0, 0, 1] 
+        self.suunta += choice(suuntalista) #kolmostasolla vihun suunta muuttuu jatkuvasti
         if self.suunta >= 6:
             self.suunta = 5
         elif self.suunta <= -6:
@@ -75,12 +75,12 @@ class Ammus(pygame.sprite.Sprite):
         super(Ammus, self).__init__()        
         self.surf = pygame.Surface((10, 5))
         self.surf.fill((255, 255, 255))
-        self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))
+        self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))     #ammus lähtee pelaajan koordinaateista
         self.nopeus = 30
     
     def liiku(self):
         self.rect.move_ip(self.nopeus, 0)
-        if self.rect.left > 1280:
+        if self.rect.left > 1280:       #poistetaan kentän ulkopuolelle menneet ammukset
             self.kill()    
 
 
@@ -88,17 +88,17 @@ class Kolikko(pygame.sprite.Sprite):
     def __init__(self, koordinaatit: tuple):
         super(Kolikko, self).__init__()
         self.surf = pygame.image.load("kolikko.png").convert_alpha()
-        self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))
+        self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))     #kolikko ilmestyy vihollisen koordinaatteihin
 
 
 class Ovi(pygame.sprite.Sprite):
     def __init__(self):
         super(Ovi, self).__init__()
         self.surf = pygame.image.load("ovi.png").convert()
-        self.rect = self.surf.get_rect(center= (-640, -480,))    
+        self.rect = self.surf.get_rect(center= (-640, -480,))    #ovi odottaa pelikentän ulkopuolella
 
-    def muuta(self):
-        self.rect = self.surf.get_rect(center= (640, 480,))
+    def muuta(self): 
+        self.rect = self.surf.get_rect(center= (640, 480,))     #siirretään ovi pelikentän keskelle
 
 
 class Peli:
@@ -112,7 +112,7 @@ class Peli:
         self.naytto = pygame.display.set_mode((1280, 960))
         self.kello = pygame.time.Clock()
         self.lisaavihu = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.lisaavihu, 1500)
+        pygame.time.set_timer(self.lisaavihu, 1500)     #määritellään kuinka usein vihollisia ilmestyy
         self.pelaaja = Pelaaja()
         self.ovi = Ovi()
         self.ovi2 = Ovi()
@@ -126,21 +126,21 @@ class Peli:
         self.silmukka()
 
     def silmukka(self):
-        while self.aloita:
+        while self.aloita:  #aloitusnäyttö näkyvillä
             self.aloitus()
-        while self.elossa:
+        while self.elossa:      #suorituslooppi käynnissä
             self.tutki_tapahtumat()
             self.tutki_osumat()
             self.tutki_pisteet()
             self.piirra_naytto()
-        while True:
+        while True:     #lopetusnäyttö näkyvillä
             self.peli_ohi()
 
     def tutki_tapahtumat(self):
         for tapahtuma in pygame.event.get():      
             if tapahtuma.type == pygame.QUIT:
                 exit() 
-            if tapahtuma.type == self.lisaavihu:
+            if tapahtuma.type == self.lisaavihu:    #vihuja ilmestyy tasaisin väliajoin
                 uusi = Vihollinen()
                 self.viholliset.add(uusi)
                 self.sprites.add(uusi)
@@ -149,30 +149,30 @@ class Peli:
                     self.elossa = False                 
                 if tapahtuma.key == pygame.K_F1:
                     self.uusi_peli()      
-                if tapahtuma.key == pygame.K_SPACE:
+                if tapahtuma.key == pygame.K_SPACE: #spacellä pelaaja ampuu ammuksen
                     koordinaatit = self.pelaaja.rect.center
-                    ammus = Ammus(koordinaatit)
+                    ammus = Ammus(koordinaatit) 
                     self.ammukset.add(ammus)
                     self.sprites.add(ammus)
-        painallukset = pygame.key.get_pressed()
-        self.pelaaja.liiku(painallukset)
-        for ammus in self.ammukset:
-            ammus.liiku()
+        painallukset = pygame.key.get_pressed()     #välitetään näppäinten painallukset
+        self.pelaaja.liiku(painallukset)    #liikutetaan pelaajaa
+        for ammus in self.ammukset: 
+            ammus.liiku()   #liikutetaan ammuksia
         for vihu in self.viholliset:
-            if self.kentta3:
+            if self.kentta3:    #liikutetaan vihollisia riippuen tasosta
                 piste = vihu.liiku3()
             elif self.kentta2:
                 piste = vihu.liiku2()
             else:
                 piste = vihu.liiku()
-            self.pisteet += piste
+            self.pisteet += piste   #jos vihu pääsee vasempaan reunaan pelaaja saa miinuspisteen
 
     def tutki_osumat(self):
-        if pygame.sprite.spritecollideany(self.pelaaja, self.viholliset):
+        if pygame.sprite.spritecollideany(self.pelaaja, self.viholliset): #tutkitaan osuuko pelaaja vihollisiin
             self.pelaaja.kill()
             self.elossa = False
         if not self.kentta2:
-            if pygame.sprite.collide_rect(self.pelaaja, self.ovi):
+            if pygame.sprite.collide_rect(self.pelaaja, self.ovi): #tutkitaan osuuko pelaaja kakkoskentän oveen
                 self.ovi.kill()
                 self.viholliset.empty()
                 self.kolikot.empty()
@@ -181,7 +181,7 @@ class Peli:
                 self.sprites.add(self.pelaaja)
                 self.kentta2 = True
         if not self.kentta3:
-            if pygame.sprite.collide_rect(self.pelaaja, self.ovi2):
+            if pygame.sprite.collide_rect(self.pelaaja, self.ovi2): #tutkitaan osuuko pelaaja kolmoskentän oveen
                 self.ovi2.kill()
                 self.viholliset.empty()
                 self.kolikot.empty()
@@ -190,9 +190,9 @@ class Peli:
                 self.sprites.add(self.pelaaja)
                 self.kentta3 = True
         for kolikko in self.kolikot:
-            if pygame.sprite.collide_rect(self.pelaaja, kolikko):
+            if pygame.sprite.collide_rect(self.pelaaja, kolikko): #tutkitaanko osuuko pelaaja kolikkoon
                 kolikko.kill()    
-                if self.kentta3:
+                if self.kentta3:    #pisteitä tulee kentän mukaan
                     self.pisteet += 3
                 elif self.kentta2:
                     self.pisteet += 2
@@ -200,37 +200,36 @@ class Peli:
                     self.pisteet += 1
         for vihu in self.viholliset:
             for ammus in self.ammukset:
-                if pygame.sprite.collide_rect(vihu, ammus):
+                if pygame.sprite.collide_rect(vihu, ammus): #tutkitaan osuuko ammus viholliseen
                     koordinaatit = vihu.rect.center
-                    kolikko = Kolikko(koordinaatit)
+                    kolikko = Kolikko(koordinaatit)     #osumasta ilmestyy kolikko
                     vihu.kill()
                     ammus.kill()            
                     self.kolikot.add(kolikko)
                     self.sprites.add(kolikko)
 
     def tutki_pisteet(self):
-        if self.pisteet == 10:
+        if self.pisteet == 10:  #tutkitaan aukeaako kakkostason ovi
             if not self.kentta2:
                 self.ovi.muuta()
                 self.sprites.add(self.ovi)
-        if self.pisteet >= 30:
+        if self.pisteet >= 30:  #tutkitaan aukeaako kolmostason ovi
             if not self.kentta3:
                 self.ovi2.muuta()
                 self.sprites.add(self.ovi2)
-        if self.pisteet < 0:
+        if self.pisteet < 0:    #miinuspisteillä peli loppuu
             self.elossa = False          
-        if self.pisteet >= 60:
+        if self.pisteet >= 60:  #peli läpäisty
             self.elossa = False     
 
     def piirra_naytto(self):
-        if self.kentta3:
+        if self.kentta3:    #kentille on eri taustavärit
             self.naytto.fill((90, 90, 90))
         elif self.kentta2:
             self.naytto.fill((150, 150, 150))
         else:
             self.naytto.fill((211, 211, 211))
-        self.naytto.blit(self.pelaaja.surf, self.pelaaja.rect)
-        for sprite in self.sprites:
+        for sprite in self.sprites:     #piirretään pelaaja ja muut objektit
             self.naytto.blit(sprite.surf, sprite.rect)
         teksti = self.fontti.render(f"Lopeta: Esc    Uusi peli: F1    Pisteet: {self.pisteet}", True, (0, 0, 0))
         self.naytto.blit(teksti, (850, 20))
@@ -239,7 +238,7 @@ class Peli:
 
     def peli_ohi(self):
         self.naytto.fill((211, 211, 211))
-        if self.pisteet < 0:
+        if self.pisteet < 0:    #eri lopputekstit erilaisille lopuille
             teksti1 = self.fontti.render(f"Hävisit pelin", True, (0, 0, 0))
         elif self.pisteet >= 60:
             teksti1 = self.fontti.render(f"Onneksi olkoon, voitit pelin!", True, (0, 0, 0))
