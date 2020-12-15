@@ -30,7 +30,7 @@ class Pelaaja(pygame.sprite.Sprite):
 class Vihollinen(pygame.sprite.Sprite):
     def __init__(self): 
         super(Vihollinen, self).__init__()    
-        self.surf = pygame.image.load("hirvio.png").convert()
+        self.surf = pygame.image.load("hirvio.png").convert_alpha()
         self.rect = self.surf.get_rect(center=(1300, randint(25, 935),))
         self.suunta = randint(-2, 2)
         self.nopeus = randint(3, 7)
@@ -87,7 +87,7 @@ class Ammus(pygame.sprite.Sprite):
 class Kolikko(pygame.sprite.Sprite):
     def __init__(self, koordinaatit: tuple):
         super(Kolikko, self).__init__()
-        self.surf = pygame.image.load("kolikko.png").convert()
+        self.surf = pygame.image.load("kolikko.png").convert_alpha()
         self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))
 
 
@@ -262,6 +262,8 @@ class Peli:
 
     def aloitus(self):
         self.naytto.fill((211, 211, 211))
+        fontti2 = pygame.font.SysFont("Arial", 36)
+        teksti0 = fontti2.render(f"Robot vs. Möröt", True, (255, 0, 0))
         teksti1 = self.fontti.render(f"Pelin tarkoituksena on ampua ja väistellä mörköjä", True, (0, 0, 0))
         teksti2 = self.fontti.render(f"Pisteitä saat kolikoita keräämällä", True, (0, 0, 0))
         teksti3 = self.fontti.render(f"Menetät pisteitä jos mörkö pääsee vasempaan reunaan", True, (0, 0, 0))
@@ -272,16 +274,17 @@ class Peli:
         teksti8 = self.fontti.render(f"Voit liikkua nuolinäppäimillä ja ampua välilyonnillä", True, (0, 0, 0))
         teksti9 = self.fontti.render(f"Aloita peli painamalla välilyontiä", True, (0, 0, 0))
         teksti10 = self.fontti.render(f"Esc lopettaa pelin", True, (0, 0, 0))
-        self.naytto.blit(teksti1, (350, 50))
-        self.naytto.blit(teksti2, (350, 120))
-        self.naytto.blit(teksti3, (350, 190))
-        self.naytto.blit(teksti4, (350, 260))
-        self.naytto.blit(teksti5, (350, 330))
-        self.naytto.blit(teksti6, (350, 400))   
-        self.naytto.blit(teksti7, (350, 470))   
-        self.naytto.blit(teksti8, (350, 540))    
-        self.naytto.blit(teksti9, (350, 610)) 
-        self.naytto.blit(teksti10, (350, 680)) 
+        self.naytto.blit(teksti0, (520, 30))
+        self.naytto.blit(teksti1, (350, 120))
+        self.naytto.blit(teksti2, (350, 190))
+        self.naytto.blit(teksti3, (350, 260))
+        self.naytto.blit(teksti4, (350, 330))
+        self.naytto.blit(teksti5, (350, 400))   
+        self.naytto.blit(teksti6, (350, 470))   
+        self.naytto.blit(teksti7, (350, 540))    
+        self.naytto.blit(teksti8, (350, 610)) 
+        self.naytto.blit(teksti9, (350, 680)) 
+        self.naytto.blit(teksti10, (350, 750)) 
         pygame.display.flip()
         for tapahtuma in pygame.event.get():      
             if tapahtuma.type == pygame.QUIT:
