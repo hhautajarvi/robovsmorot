@@ -17,9 +17,9 @@ class Pelaaja(pygame.sprite.Sprite):
             self.rect.move_ip(-5, 0)
         if painallukset[pygame.K_RIGHT]:
             self.rect.move_ip(5, 0)
-        if self.rect.left < 0:
+        if self.rect.left <= 0:
             self.rect.left = 0
-        if self.rect.right > 1280:
+        if self.rect.right >= 1280:
             self.rect.right = 1280
         if self.rect.top <= 0:
             self.rect.top = 0
@@ -122,7 +122,7 @@ class Peli:
         self.sprites = pygame.sprite.Group()
         self.sprites.add(self.pelaaja)
         self.fontti = pygame.font.SysFont("Arial", 24)
-        pygame.display.set_caption("Robo vs möröt")
+        pygame.display.set_caption("Robo vs Möröt")
         self.silmukka()
 
     def silmukka(self):
@@ -263,10 +263,10 @@ class Peli:
     def aloitus(self):
         self.naytto.fill((211, 211, 211))
         fontti2 = pygame.font.SysFont("Arial", 36)
-        teksti0 = fontti2.render(f"Robot vs. Möröt", True, (255, 0, 0))
+        teksti0 = fontti2.render(f"Robo vs. Möröt", True, (255, 0, 0))
         teksti1 = self.fontti.render(f"Pelin tarkoituksena on ampua ja väistellä mörköjä", True, (0, 0, 0))
         teksti2 = self.fontti.render(f"Pisteitä saat kolikoita keräämällä", True, (0, 0, 0))
-        teksti3 = self.fontti.render(f"Menetät pisteitä jos mörkö pääsee vasempaan reunaan", True, (0, 0, 0))
+        teksti3 = self.fontti.render(f"Menetät pisteen jos mörkö pääsee vasempaan reunaan", True, (0, 0, 0))
         teksti4 = self.fontti.render(f"Mörköön törmäämällä tai negatiivisilla pisteillä häviät pelin", True, (0, 0, 0))
         teksti5 = self.fontti.render(f"Ovesta pääset seuraavaan kenttään kerättyäsi tarpeeksi pisteitä", True, (0, 0, 0))
         teksti6 = self.fontti.render(f"Toisessa ja kolmannessa kentässä saat kolikoista lisäpisteitä", True, (0, 0, 0))
