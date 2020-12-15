@@ -2,13 +2,13 @@
 import pygame
 from random import choice, randint
 
-class Pelaaja(pygame.sprite.Sprite):
+class Pelaaja(pygame.sprite.Sprite):    #tehdään pelaajasta ja muista objekteista sprite-luokat
     def __init__(self):
-        super(Pelaaja, self).__init__()
-        self.surf = pygame.image.load("robo.png").convert()
-        self.rect = self.surf.get_rect(center=(20, 480,))
+        super(Pelaaja, self).__init__()     #kutsutaan spriten __init__ -metodia
+        self.surf = pygame.image.load("robo.png").convert()     #ladataan oikea kuva
+        self.rect = self.surf.get_rect(center=(20, 480,))   #ja tehdään kuvan muotoinen nelikulmio oikeaan paikkaan
 
-    def liiku(self, painallukset):      #liikutetaan pelaajaa
+    def liiku(self, painallukset):      #liikutetaan pelaajaa näppäinpainalluksien mukaan
         if painallukset[pygame.K_UP]:
             self.rect.move_ip(0, -5)
         if painallukset[pygame.K_DOWN]:
@@ -31,7 +31,7 @@ class Vihollinen(pygame.sprite.Sprite):
     def __init__(self): 
         super(Vihollinen, self).__init__()    
         self.surf = pygame.image.load("hirvio.png").convert_alpha()
-        self.rect = self.surf.get_rect(center=(1300, randint(25, 935),))
+        self.rect = self.surf.get_rect(center=(1300, randint(25, 935),))    #arvotaan vihollisten aloituskoordinaatit
         self.suunta = randint(-2, 2)    #yleimmillä tasoilla vihollisten suunta vaihtelee
         self.nopeus = randint(3, 7)     #vihollisten nopeus vaihtelee
 
@@ -73,7 +73,7 @@ class Vihollinen(pygame.sprite.Sprite):
 class Ammus(pygame.sprite.Sprite):
     def __init__(self, koordinaatit: tuple):
         super(Ammus, self).__init__()        
-        self.surf = pygame.Surface((10, 5))
+        self.surf = pygame.Surface((10, 5))     #ammus on pieni nelikulmio
         self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect(center= (koordinaatit[0], koordinaatit[1],))     #ammus lähtee pelaajan koordinaateista
         self.nopeus = 30
@@ -116,10 +116,10 @@ class Peli:
         self.pelaaja = Pelaaja()
         self.ovi = Ovi()
         self.ovi2 = Ovi()
-        self.viholliset = pygame.sprite.Group()
+        self.viholliset = pygame.sprite.Group()     #laitetaan objektit omiin ryhmiinsä
         self.ammukset = pygame.sprite.Group()
         self.kolikot = pygame.sprite.Group()
-        self.sprites = pygame.sprite.Group()
+        self.sprites = pygame.sprite.Group()    #yhteen ryhmään kerätään kaikki eri objektit
         self.sprites.add(self.pelaaja)
         self.fontti = pygame.font.SysFont("Arial", 24)
         pygame.display.set_caption("Robo vs Möröt")
