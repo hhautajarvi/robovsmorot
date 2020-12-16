@@ -113,8 +113,8 @@ class Aika:         #laskuri ajalle
         return time.perf_counter() - self.aloitusaika
 
 
-class Peli:
-    def __init__(self):
+class Peli:     
+    def __init__(self):     #asetetaan pelin aloitusarvot
         pygame.init()
         self.elossa = True
         self.aloita = True
@@ -122,11 +122,11 @@ class Peli:
         self.kentta3 = False
         self.pisteet = 0
         self.naytto = pygame.display.set_mode((1280, 960))
-        self.kello = pygame.time.Clock()
+        self.kello = pygame.time.Clock()    #kellolla määritetään animaation nopeus
         self.aika = Aika()
         self.lisaavihu = pygame.USEREVENT + 1
         pygame.time.set_timer(self.lisaavihu, 1500)     #määritellään kuinka usein vihollisia ilmestyy
-        self.pelaaja = Pelaaja()
+        self.pelaaja = Pelaaja()    #lisätään kenttään pelaaja ja tasojen ovet
         self.ovi = Ovi()
         self.ovi2 = Ovi()
         self.viholliset = pygame.sprite.Group()     #laitetaan objektit omiin ryhmiinsä
@@ -160,9 +160,9 @@ class Peli:
                 self.viholliset.add(uusi)
                 self.sprites.add(uusi)
             if tapahtuma.type == pygame.KEYDOWN:
-                if tapahtuma.key == pygame.K_ESCAPE:
+                if tapahtuma.key == pygame.K_ESCAPE:    #esc lopettaa pelin
                     self.elossa = False                 
-                if tapahtuma.key == pygame.K_F1:
+                if tapahtuma.key == pygame.K_F1:    #F1 aloittaa uuden pelin
                     self.uusi_peli()      
                 if tapahtuma.key == pygame.K_SPACE: #spacellä pelaaja ampuu ammuksen
                     koordinaatit = self.pelaaja.rect.center
@@ -189,7 +189,7 @@ class Peli:
         if not self.kentta2:
             if pygame.sprite.collide_rect(self.pelaaja, self.ovi): #tutkitaan osuuko pelaaja kakkoskentän oveen
                 self.ovi.kill()
-                self.viholliset.empty()
+                self.viholliset.empty()     #tyhjennetään kenttä objekteista kun mennään uudelle tasolle
                 self.kolikot.empty()
                 self.ammukset.empty()
                 self.sprites.empty()
@@ -247,7 +247,7 @@ class Peli:
         for sprite in self.sprites:     #piirretään pelaaja ja muut objektit
             self.naytto.blit(sprite.surf, sprite.rect)
         teksti = self.fontti.render(f"Lopeta: Esc    Uusi peli: F1    Aika: {self.aika.aikanyt():0.2f}s    Pisteet: {self.pisteet}", True, (0, 0, 0))
-        self.naytto.blit(teksti, (700, 20))
+        self.naytto.blit(teksti, (650, 20))
         pygame.display.flip()
         self.kello.tick(60)
 
