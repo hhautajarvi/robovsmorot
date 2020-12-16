@@ -1,6 +1,7 @@
 # TEE PELI TÄHÄN
 import pygame
 from random import choice, randint
+import time
 
 class Pelaaja(pygame.sprite.Sprite):    #tehdään pelaajasta ja muista objekteista sprite-luokat
     def __init__(self):
@@ -101,6 +102,17 @@ class Ovi(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(center= (640, 480,))     #siirretään ovi pelikentän keskelle
 
 
+class Aika:         #laskuri ajalle
+    def __init__(self):
+        self.aloitusaika = None
+
+    def aloita(self):
+        self.aloitusaika = time.perf_counter()
+
+    def aikanyt(self):
+        return time.perf_counter() - self.aloitusaika
+
+
 class Peli:
     def __init__(self):
         pygame.init()
@@ -111,6 +123,7 @@ class Peli:
         self.pisteet = 0
         self.naytto = pygame.display.set_mode((1280, 960))
         self.kello = pygame.time.Clock()
+        self.aika = Aika()
         self.lisaavihu = pygame.USEREVENT + 1
         pygame.time.set_timer(self.lisaavihu, 1500)     #määritellään kuinka usein vihollisia ilmestyy
         self.pelaaja = Pelaaja()
@@ -128,11 +141,13 @@ class Peli:
     def silmukka(self):
         while self.aloita:  #aloitusnäyttö näkyvillä
             self.aloitus()
+        self.aika.aloita()      #aloitetaan ajan mittaus
         while self.elossa:      #suorituslooppi käynnissä
             self.tutki_tapahtumat()
             self.tutki_osumat()
             self.tutki_pisteet()
             self.piirra_naytto()
+        self.lopetusaika = self.aika.aikanyt()      #lopetetaan ajan mittaus
         while True:     #lopetusnäyttö näkyvillä
             self.peli_ohi()
 
@@ -231,8 +246,8 @@ class Peli:
             self.naytto.fill((211, 211, 211))
         for sprite in self.sprites:     #piirretään pelaaja ja muut objektit
             self.naytto.blit(sprite.surf, sprite.rect)
-        teksti = self.fontti.render(f"Lopeta: Esc    Uusi peli: F1    Pisteet: {self.pisteet}", True, (0, 0, 0))
-        self.naytto.blit(teksti, (850, 20))
+        teksti = self.fontti.render(f"Lopeta: Esc    Uusi peli: F1    Aika: {self.aika.aikanyt():0.2f}s    Pisteet: {self.pisteet}", True, (0, 0, 0))
+        self.naytto.blit(teksti, (700, 20))
         pygame.display.flip()
         self.kello.tick(60)
 
@@ -244,11 +259,13 @@ class Peli:
             teksti1 = self.fontti.render(f"Onneksi olkoon, voitit pelin!", True, (0, 0, 0))
         else:
             teksti1 = self.fontti.render(f"Onnittelut, sait {self.pisteet} pistettä", True, (0, 0, 0))
-        teksti2 = self.fontti.render(f"Esc lopettaa pelin", True, (0, 0, 0))
-        teksti3 = self.fontti.render(f"F1 aloittaa uuden pelin", True, (0, 0, 0))
+        teksti2 = self.fontti.render(f"Aikasi oli {self.lopetusaika:0.2f} sekuntia", True, (0, 0, 0))
+        teksti3 = self.fontti.render(f"Esc lopettaa pelin", True, (0, 0, 0))
+        teksti4 = self.fontti.render(f"F1 aloittaa uuden pelin", True, (0, 0, 0))
         self.naytto.blit(teksti1, (530, 300))
         self.naytto.blit(teksti2, (530, 370))
         self.naytto.blit(teksti3, (530, 440))
+        self.naytto.blit(teksti4, (530, 510))
         pygame.display.flip()
         for tapahtuma in pygame.event.get():      
             if tapahtuma.type == pygame.QUIT:
@@ -296,4 +313,5 @@ class Peli:
 
     def uusi_peli(self):
         Peli()
+
 Peli()
